@@ -1,0 +1,4 @@
+{
+  "expect_exit": 0,
+  "input": { "tool_input": { "command": "kubectl apply --dry-run=server -f deploy.yaml" } }
+}

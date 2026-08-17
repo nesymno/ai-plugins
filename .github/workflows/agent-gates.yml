@@ -1,0 +1,29 @@
+name: agent-gates
+
+on:
+  push:
+    paths: ['.claude/**', '.github/workflows/agent-gates.yml']
+  pull_request:
+    paths: ['.claude/**']
+  schedule:
+    - cron: '0 6 * * 1'   # weekly: catches gates that rotted without a commit
+
+jobs:
+  verify-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+      - name: Restore exec bits
+        run: chmod +x .claude/hooks/*.sh .claude/harness/*.sh
+      - name: Verify enforcement gates
+        env:
+          CLAUDE_PROJECT_DIR: ${{ github.workspace }}
+        run: .claude/harness/verify-gates.sh
+      - name: Skip census
+        run: |
+          n=$(grep -rn "t\.Skip\|testing\.Short()" --include='*_test.go' . \
+              | grep -v 'ALLOW-SKIP' | grep -v '.claude/harness/fixtures' | wc -l)
+          echo "unjustified skips: $n"
+          echo "unjustified skips: $n" >> "$GITHUB_STEP_SUMMARY"

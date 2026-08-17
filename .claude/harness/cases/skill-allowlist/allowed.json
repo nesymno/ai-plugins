@@ -1,0 +1,5 @@
+{
+  "expect_exit": 0,
+  "args": "go-coder",
+  "input": { "tool_input": { "skill": "golang-concurrency" } }
+}

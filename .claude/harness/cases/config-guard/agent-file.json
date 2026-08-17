@@ -1,0 +1,4 @@
+{
+  "expect_exit": 2,
+  "input": { "tool_input": { "file_path": ".claude/agents/go-coder.md" } }
+}

@@ -1,0 +1,5 @@
+{
+  "expect_exit": 2,
+  "args": "not-a-real-agent",
+  "input": { "tool_input": { "skill": "golang-concurrency" } }
+}

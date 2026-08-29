@@ -2,9 +2,9 @@ name: agent-gates
 
 on:
   push:
-    paths: ['.claude/**', '.github/workflows/agent-gates.yml']
+    paths: ['agents/**', 'hooks/**', 'harness/**', 'skills/**', '.claude-plugin/**', '.github/workflows/agent-gates.yml']
   pull_request:
-    paths: ['.claude/**']
+    paths: ['agents/**', 'hooks/**', 'harness/**', 'skills/**', '.claude-plugin/**']
   schedule:
     - cron: '0 6 * * 1'   # weekly: catches gates that rotted without a commit
 
@@ -16,14 +16,19 @@ jobs:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
       - name: Restore exec bits
-        run: chmod +x .claude/hooks/*.sh .claude/harness/*.sh
+        run: chmod +x hooks/*.sh harness/*.sh
+      - name: Validate plugin manifests
+        run: |
+          jq -e . .claude-plugin/plugin.json > /dev/null
+          jq -e . .claude-plugin/marketplace.json > /dev/null
+          jq -e . hooks/hooks.json > /dev/null
       - name: Verify enforcement gates
         env:
-          CLAUDE_PROJECT_DIR: ${{ github.workspace }}
-        run: .claude/harness/verify-gates.sh
+          CLAUDE_PLUGIN_ROOT: ${{ github.workspace }}
+        run: harness/verify-gates.sh
       - name: Skip census
         run: |
           n=$(grep -rn "t\.Skip\|testing\.Short()" --include='*_test.go' . \
-              | grep -v 'ALLOW-SKIP' | grep -v '.claude/harness/fixtures' | wc -l)
+              | grep -v 'ALLOW-SKIP' | grep -v 'harness/fixtures' | wc -l)
           echo "unjustified skips: $n"
           echo "unjustified skips: $n" >> "$GITHUB_STEP_SUMMARY"

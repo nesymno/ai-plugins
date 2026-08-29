@@ -1,0 +1,1 @@
+{ "expect_exit": 2, "input": { "agent_type": "devops", "tool_input": { "command": "echo prod | xargs -I{} kubectl delete ns {}" } } }

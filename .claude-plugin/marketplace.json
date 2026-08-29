@@ -1,0 +1,25 @@
+{
+  "name": "nesymno",
+  "owner": {
+    "name": "nesymno",
+    "email": "nesymno@gmail.com",
+    "url": "https://github.com/nesymno"
+  },
+  "description": "nesymno's portable Go and DevOps agent system, packaged as an installable plugin.",
+  "version": "0.1.0",
+  "plugins": [
+    {
+      "name": "prod-ready-go-infra-coding",
+      "source": ".",
+      "description": "Nine scoped Go/DevOps agents with skill allowlists and enforcement hooks.",
+      "version": "0.1.0",
+      "author": { "name": "nesymno" },
+      "homepage": "https://github.com/nesymno/ai-plugins",
+      "repository": "https://github.com/nesymno/ai-plugins",
+      "license": "MIT",
+      "category": "development",
+      "keywords": ["go", "golang", "code-review", "devops", "testing"],
+      "strict": false
+    }
+  ]
+}

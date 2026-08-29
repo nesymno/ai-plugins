@@ -1,0 +1,1 @@
+{ "expect_exit": 0, "input": { "agent_type": "go-reviewer", "tool_input": { "command": "git log --oneline -20 2>/dev/null" } } }

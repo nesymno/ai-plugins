@@ -1,0 +1,1 @@
+{ "expect_exit": 0, "input": { "agent_type": "go-coder", "tool_input": { "command": "kubectl apply -f deploy.yaml" } } }

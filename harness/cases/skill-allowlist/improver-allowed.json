@@ -1,0 +1,1 @@
+{ "expect_exit": 0, "input": { "agent_type": "improver", "tool_input": { "skill": "systematic-debugging" } } }

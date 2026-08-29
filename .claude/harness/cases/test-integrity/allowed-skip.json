@@ -1,4 +1,0 @@
-{
-  "expect_exit": 0,
-  "input": { "tool_input": { "file_path": ".claude/harness/fixtures/allowed_skip_test.go" } }
-}

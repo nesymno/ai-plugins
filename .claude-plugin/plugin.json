@@ -1,0 +1,14 @@
+{
+  "name": "prod-ready-go-infra-coding",
+  "displayName": "Production-ready Go & infra coding agents",
+  "version": "0.1.0",
+  "description": "Nine scoped Go/DevOps agents with hard skill allowlists and hooks that enforce the boundaries the prompts describe. Prompts persuade; hooks enforce.",
+  "author": {
+    "name": "nesymno",
+    "email": "nesymno@gmail.com"
+  },
+  "homepage": "https://github.com/nesymno/ai-plugins",
+  "repository": "https://github.com/nesymno/ai-plugins",
+  "license": "MIT",
+  "keywords": ["go", "golang", "code-review", "devops", "testing", "agents", "subagents"]
+}

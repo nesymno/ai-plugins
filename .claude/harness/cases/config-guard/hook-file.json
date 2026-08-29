@@ -1,4 +1,0 @@
-{
-  "expect_exit": 2,
-  "input": { "tool_input": { "file_path": ".claude/hooks/test-integrity.sh" } }
-}

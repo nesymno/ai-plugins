@@ -1,4 +1,0 @@
-{
-  "expect_exit": 0,
-  "input": { "tool_input": { "command": "kubectl get pods -n production -o wide" } }
-}

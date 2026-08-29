@@ -1,4 +1,0 @@
-{
-  "expect_exit": 2,
-  "input": { "tool_input": { "command": "helm upgrade api ./chart -n prod" } }
-}

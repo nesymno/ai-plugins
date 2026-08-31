@@ -2,8 +2,8 @@
 
 ## Scope
 
-This repository is the `nesymno` Claude Code plugin and its marketplace: nine
-scoped Go/DevOps agents, the hooks that enforce their boundaries, the harness
+This repository is the `nesymno` Claude Code plugin and its marketplace: seven
+scoped Go agents, the hooks that enforce their boundaries, the harness
 that proves the hooks still fire, and an installer for the third-party skills
 the agents reference. It is distributed through the Claude Code plugin
 marketplace (`.claude-plugin/marketplace.json`).
@@ -12,13 +12,13 @@ marketplace (`.claude-plugin/marketplace.json`).
 
     .claude-plugin/plugin.json        plugin manifest
     .claude-plugin/marketplace.json   marketplace entry (source ".")
-    agents/                           the nine agent definitions
+    agents/                           the seven agent definitions
     hooks/hooks.json                  every gate, wired at plugin scope
     hooks/*.sh                        enforcement scripts (read .agent_type)
     harness/verify-gates.sh           proves the hooks still block
     harness/cases/                    behavioural fixture per hook
     harness/fixtures/                 Go files the test-integrity fixtures load
-    skills/platform-runbook/          bundled skill (fill in per environment)
+    skills/feature-workflow/          bundled skill: request-to-prod runbook + templates
     commands/                         /nesymno:* slash commands
     scripts/install-skills.sh         installs the third-party skills loosely
     .github/workflows/agent-gates.yml CI: runs verify-gates on every push

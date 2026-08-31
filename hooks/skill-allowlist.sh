@@ -42,14 +42,6 @@ case "$AGENT" in
              golang-data-structures golang-database golang-grpc golang-safety
              test-driven-development debugging-and-error-recovery
              verification-before-completion" ;;
-  devops)
-    ALLOWED="conventional-git golang-continuous-integration
-             golang-dependency-management golang-lint golang-spf13-viper
-             ci-cd-and-automation deprecation-and-migration
-             snyk-agent-scan-compliance" ;;
-  devops-analyzer)
-    ALLOWED="promql-cli golang-observability golang-troubleshooting
-             systematic-debugging observability-and-instrumentation" ;;
   improver)
     ALLOWED="skill-progressive-disclosure-design verification-before-completion
              systematic-debugging" ;;

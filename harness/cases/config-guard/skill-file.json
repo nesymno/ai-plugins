@@ -1,1 +1,1 @@
-{ "expect_exit": 0, "input": { "agent_type": "improver", "tool_input": { "file_path": "skills/platform-runbook/SKILL.md" } } }
+{ "expect_exit": 0, "input": { "agent_type": "improver", "tool_input": { "file_path": "skills/feature-workflow/SKILL.md" } } }

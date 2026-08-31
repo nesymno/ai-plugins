@@ -1,1 +1,9 @@
-{ "expect_exit": 2, "input": { "tool_input": { "file_path": "harness/fixtures/skip_test.go" } } }
+{
+  "expect_exit": 2,
+  "input": {
+    "tool_input": {
+      "file_path": "harness/fixtures/skip_test.go"
+    }
+  },
+  "expect_stderr": "Test integrity check failed"
+}

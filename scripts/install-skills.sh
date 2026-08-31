@@ -6,8 +6,6 @@
 #   - plugin skills are namespaced (repo:skill), which breaks the plain names
 #     used in agent `skills:` fields and in hooks/skill-allowlist.sh
 #
-# platform-runbook ships inside this plugin (skills/platform-runbook) and is
-# not installed here.
 set -euo pipefail
 
 add() { echo ">> $2 from $1"; npx --yes skills add "$1" --skill "$2"; }
@@ -26,13 +24,10 @@ for s in golang-error-handling golang-context golang-structs-interfaces \
          golang-design-patterns golang-data-structures golang-database \
          golang-modernize golang-how-to golang-samber-do golang-grpc \
          golang-swagger golang-observability golang-security \
-         golang-performance golang-troubleshooting golang-benchmark \
-         golang-lint golang-continuous-integration \
-         golang-dependency-management golang-spf13-viper; do
+         golang-performance golang-troubleshooting golang-benchmark; do
   add "$GO" "$s"
 done
-for s in conventional-git skill-progressive-disclosure-design \
-         promql-cli snyk-agent-scan-compliance; do
+for s in skill-progressive-disclosure-design; do
   add "$GEN" "$s"
 done
 
@@ -40,9 +35,7 @@ done
 AO=addyosmani/agent-skills
 for s in incremental-implementation api-and-interface-design \
          code-review-and-quality code-simplification security-and-hardening \
-         test-driven-development debugging-and-error-recovery \
-         ci-cd-and-automation observability-and-instrumentation \
-         deprecation-and-migration; do
+         test-driven-development debugging-and-error-recovery; do
   add "$AO" "$s"
 done
 for s in systematic-debugging verification-before-completion; do

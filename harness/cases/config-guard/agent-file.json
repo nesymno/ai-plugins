@@ -1,1 +1,10 @@
-{ "expect_exit": 2, "input": { "agent_type": "improver", "tool_input": { "file_path": "agents/go-coder.md" } } }
+{
+  "expect_exit": 2,
+  "input": {
+    "agent_type": "improver",
+    "tool_input": {
+      "file_path": "agents/go-coder.md"
+    }
+  },
+  "expect_stderr": "agent security boundary"
+}

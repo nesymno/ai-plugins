@@ -1,1 +1,10 @@
-{ "expect_exit": 2, "input": { "agent_type": "go-coder", "tool_input": { "skill": "golang-security" } } }
+{
+  "expect_exit": 2,
+  "input": {
+    "agent_type": "go-coder",
+    "tool_input": {
+      "skill": "golang-security"
+    }
+  },
+  "expect_stderr": "is not in the allowlist"
+}

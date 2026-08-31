@@ -1,6 +1,6 @@
-# prod-ready-go-infra-coding
+# prod-ready-go-coding
 
-A Claude Code plugin: nine scoped Go/DevOps agents, hard skill allowlists, and
+A Claude Code plugin: seven scoped Go agents, hard skill allowlists, and
 hooks that enforce the boundaries the prompts describe. Prompts persuade; hooks
 enforce.
 
@@ -8,7 +8,7 @@ enforce.
 
 ```
 /plugin marketplace add nesymno/ai-plugins
-/plugin install prod-ready-go-infra-coding@nesymno
+/plugin install prod-ready-go-coding@nesymno
 ```
 
 Then, once per machine, install the third-party skills the agents reference and
@@ -22,10 +22,7 @@ git clone https://github.com/nesymno/ai-plugins && cd ai-plugins
 
 `scripts/install-skills.sh` installs the Go skills loosely under
 `~/.claude/skills/` (not as plugins) so the plain names in agent frontmatter
-and in `hooks/skill-allowlist.sh` resolve. `platform-runbook` ships inside the
-plugin; fill it in for your environment at
-`skills/platform-runbook/SKILL.md` (it is preloaded into `devops` and
-`devops-analyzer`, so keep it under ~1500 tokens).
+and in `hooks/skill-allowlist.sh` resolve.
 
 ## Agents
 
@@ -36,8 +33,6 @@ plugin; fill it in for your environment at
 | go-reviewer | opus | golang-safety, golang-concurrency | go-precheck gate, bash-write-guard, skill-allowlist |
 | go-qa-automation | sonnet | golang-testing, golang-stretchr-testify | test-integrity, skill-allowlist |
 | go-qa-verifier | haiku | - | bash-write-guard, read-only tools |
-| devops | sonnet | platform-runbook | infra-readonly, infra-validate, skill-allowlist |
-| devops-analyzer | sonnet | platform-runbook | infra-readonly, read-only tools |
 | harness-gate | sonnet | - | bash-write-guard, read-only tools |
 | improver | sonnet | - | config-guard, skill-allowlist |
 
@@ -51,18 +46,26 @@ does nothing.
 
 | Hook | Event | Enforces for | Effect |
 |---|---|---|---|
-| skill-allowlist | PreToolUse:Skill | go-coder, go-reviewer, go-qa-automation, devops, devops-analyzer, improver | per-agent lazy-skill allowlist |
+| skill-allowlist | PreToolUse:Skill | go-coder, go-reviewer, go-qa-automation, improver | per-agent lazy-skill allowlist |
 | bash-write-guard | PreToolUse:Bash | go-reviewer, go-qa-verifier, harness-gate | keep a read-only agent read-only |
-| infra-readonly | PreToolUse:Bash | devops, devops-analyzer | block live-infra mutation |
 | config-guard | PreToolUse:Edit\|Write | improver | block edits to agents/hooks/harness/settings → write a proposal |
 | go-check | PostToolUse:Edit\|Write | any (Go files only) | gofmt / build / vet / golangci-lint |
 | test-integrity | PostToolUse:Edit\|Write | any (`*_test.go` only) | block weakening a test |
-| infra-validate | PostToolUse:Edit\|Write | any (infra files only) | terraform/actionlint/hadolint/... |
 | session-start | SessionStart | - | run verify-gates, warn if a gate is broken |
 | telemetry | SubagentStop | - | append one line per finished subagent for `improver` |
 
 `hooks/go-precheck.sh` is not a hook; `go-reviewer` runs it by hand as its
 first step.
+
+## Feature workflow
+
+The agents execute; they do not plan. The `feature-workflow` skill (also
+`/nesymno:feature-workflow`) is the request-to-prod-ready runbook: intake,
+spec, plan, then the dispatch sequence across `go-coder`, `go-qa-automation`,
+`go-qa-verifier`, and `go-reviewer`, with the gate that fires at each step and
+a definition of done. Spec and plan templates live in
+`skills/feature-workflow/templates/`. It runs on the main thread, so no
+`skill-allowlist` entry and no `install-skills.sh` change is needed.
 
 ## Verifying the gates
 
@@ -78,9 +81,9 @@ every push touching the plugin, plus weekly.
 - **agent_type is the whole mechanism.** Rename an agent without updating the
   matching branch in every hook and that agent silently loses its gate.
   `harness-gate` hunts for exactly this.
-- **The Bash denylists leak.** `bash-write-guard` and `infra-readonly` catch
-  common shapes, not every shape. Pair `infra-readonly` with `permissions.deny`
-  in the host project's `settings.json`, which Claude Code enforces itself.
+- **The Bash denylist leaks.** `bash-write-guard` catches common shapes, not
+  every shape. Pair it with `permissions.deny` in the host project's
+  `settings.json`, which Claude Code enforces itself.
 - **improver's eval numbers are synthetic.** They say "this edit did not make
   things worse", not "this helps in production". The honest health metric is
   the share of tasks that finish green without your intervention.

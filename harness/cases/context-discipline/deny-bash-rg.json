@@ -1,0 +1,2 @@
+{ "expect_exit": 2, "args": "--assume-ripwire", "expect_stderr": "repo-wide text search",
+  "input": { "agent_type": "go-qa-automation", "tool_name": "Bash", "tool_input": { "command": "rg --type go 'testcontainers'" } } }

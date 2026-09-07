@@ -1,0 +1,2 @@
+{ "expect_exit": 0, "args": "--assume-ripwire",
+  "input": { "agent_type": "go-coder", "tool_name": "Bash", "tool_input": { "command": "grep -n 'module ' go.mod" } } }

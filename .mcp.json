@@ -1,0 +1,8 @@
+{
+  "$comment": "ripwire (https://github.com/redhat-et/ripwire) as a persistent index server. Parse once, many warm queries (~0.1s) - the CLI form re-reads the TMPDIR cache per invocation instead. Started through a shim so a missing binary yields one actionable line rather than 'command not found' on every session start. Which agent may call which verb is decided in each agent's tools: list, not here.",
+  "mcpServers": {
+    "ripwire": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/ripwire-mcp.sh"
+    }
+  }
+}

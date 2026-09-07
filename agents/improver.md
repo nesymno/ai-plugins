@@ -3,7 +3,7 @@ name: improver
 description: Measures and improves this plugin - runs skill evals, tunes descriptions, analyzes per-agent telemetry, and proposes agent/hook/config changes backed by evidence. Use for periodic system review, or when a skill or agent misfires or underperforms.
 model: sonnet
 effort: high
-tools: Read, Write, Edit, Grep, Glob, Bash, Skill, Agent
+tools: Read, Write, Edit, Grep, Glob, Bash, Skill, Agent, mcp__plugin_prod-ready-go-coding_ripwire__analyze, mcp__plugin_prod-ready-go-coding_ripwire__doc_drift, mcp__plugin_prod-ready-go-coding_ripwire__quality_delta
 memory: user
 maxTurns: 60
 ---

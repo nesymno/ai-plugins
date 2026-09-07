@@ -3,7 +3,7 @@ name: go-qa-verifier
 description: Runs the Go test suite and reports only what failed. Use to check whether a change is green without pulling test output into the main conversation.
 model: haiku
 effort: low
-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob, Bash, mcp__plugin_prod-ready-go-coding_ripwire__impact, mcp__plugin_prod-ready-go-coding_ripwire__uses
 disallowedTools: Skill, Write, Edit
 maxTurns: 12
 ---
@@ -16,6 +16,13 @@ Run, in order, stopping at the first that fails to execute at all:
 1. go build ./...
 2. go vet ./...
 3. go test -race -count=1 ./...
+
+Step 3 is the full suite and stays the full suite. Do NOT narrow it with
+`ripwire . --affected` or `--test-gate`: those exist for the implement/review
+loop, where a fast partial answer beats a complete slow one. You are the gate
+before ship, and a gate that skips packages is not a gate. You may use
+`--affected=<changed files>` to name WHICH packages the change touched when you
+report the coverage delta - never to decide what to run.
 
 Report format:
 

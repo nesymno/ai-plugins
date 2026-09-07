@@ -1,0 +1,2 @@
+{ "expect_exit": 2, "args": "--assume-ripwire --budget=0", "expect_stderr": "whole-file read budget spent",
+  "input": { "session_id": "gates-deny", "agent_type": "go-coder", "tool_input": { "file_path": "internal/api/handler.go" } } }

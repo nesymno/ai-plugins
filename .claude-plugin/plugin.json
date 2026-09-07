@@ -1,7 +1,7 @@
 {
   "name": "prod-ready-go-coding",
   "displayName": "Production-ready Go coding agents",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Seven scoped Go agents with hard skill allowlists and hooks that enforce the boundaries the prompts describe. Prompts persuade; hooks enforce.",
   "author": {
     "name": "nesymno",

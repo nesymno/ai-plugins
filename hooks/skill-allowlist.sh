@@ -30,21 +30,27 @@ case "$AGENT" in
              golang-data-structures golang-database golang-modernize
              golang-how-to golang-samber-do golang-grpc golang-swagger
              golang-observability incremental-implementation
-             api-and-interface-design" ;;
+             api-and-interface-design
+             ripwire-router ripwire-reuse-first ripwire-before-you-build
+             ripwire-efficient" ;;
   go-reviewer)
     ALLOWED="golang-error-handling golang-context
              golang-structs-interfaces golang-design-patterns
              golang-data-structures golang-database golang-grpc
              golang-security golang-performance code-review-and-quality
-             code-simplification security-and-hardening" ;;
+             code-simplification security-and-hardening
+             ripwire-router ripwire-change-check ripwire-fresh-eyes
+             ripwire-quality-bar ripwire-navigate" ;;
   go-qa-automation)
     ALLOWED="golang-benchmark golang-troubleshooting golang-concurrency
              golang-data-structures golang-database golang-grpc golang-safety
              test-driven-development debugging-and-error-recovery
-             verification-before-completion" ;;
+             verification-before-completion
+             ripwire-router ripwire-write-tests ripwire-change-check
+             ripwire-find-bug" ;;
   improver)
     ALLOWED="skill-progressive-disclosure-design verification-before-completion
-             systematic-debugging" ;;
+             systematic-debugging ripwire-security-scan" ;;
   *)
     # Not one of this plugin's gated agents - do not interfere.
     exit 0 ;;

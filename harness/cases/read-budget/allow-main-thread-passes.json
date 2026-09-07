@@ -1,0 +1,2 @@
+{ "expect_exit": 0, "args": "--assume-ripwire --budget=0",
+  "input": { "session_id": "gates-main", "tool_name": "Read", "tool_input": { "file_path": "README.md" } } }

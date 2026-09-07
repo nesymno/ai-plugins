@@ -46,21 +46,43 @@ re-dispatch to `go-coder`, not a failure.
 
 ## The sequence
 
-| Phase       | Who                               | Output                            | Gate at this step                                          |
-| ----------- | --------------------------------- | --------------------------------- | --------------------------------------------------------- |
-| 0 Intake    | you                               | feature branch, ticket, touch-point list | premise sound; size fits one spec                  |
-| 1 Spec      | you + `superpowers:brainstorming` | `docs/specs/<feature>.md`         | every criterion testable; **human approves spec (STOP #1)** |
-| 2 Plan      | you + `superpowers:writing-plans` | `docs/plans/<feature>.md`         | executable unaided; **human approves plan (STOP #2)**     |
-| 3 Implement | `go-coder` (or `go-coder-fast`)   | feature code                      | `go-check`: gofmt/build/vet/golangci-lint green            |
-| 4 Tests     | `go-qa-automation`                | tests, worktree-isolated          | `test-integrity`: no skips / weakened asserts             |
-| 5 Verify    | `go-qa-verifier`                  | PASS/FAIL report + coverage delta | build + vet + `test -race` clean, 0 unexplained skips     |
-| 6 Review    | `go-reviewer`                     | findings list                     | `go-precheck.sh` passes; loop to 3, max 3 rounds then escalate |
-| 7 DoD       | you                               | checklist below all green         | `govulncheck` clean                                       |
-| 8 Ship      | you                               | commit + PR referencing spec/plan | CI (`agent-gates.yml`) is the backstop                    |
+| Phase | Who | Output | Retrieval move | Gate at this step |
+| --- | --- | --- | --- | --- |
+| 0 Intake | you | feature branch, ticket, touch-point list | `--for="<ticket>"` + `--recall` | premise sound; size fits one spec |
+| 1 Spec | you + `superpowers:brainstorming` | `docs/specs/<feature>.md` | `--seams`, `--lego=<Interface>` | every criterion testable; **human approves spec (STOP #1)** |
+| 2 Plan | you + `superpowers:writing-plans` | `docs/plans/<feature>.md` | `--pack-task` (+`--partition=N`), `--plan-lanes=N` | executable unaided; **human approves plan (STOP #2)** |
+| 3 Implement | `go-coder` (or `go-coder-fast`) | feature code | `--exemplar`, `--expand`, `--edit-check=SYM` | `go-check`: gofmt/build/vet/golangci-lint green |
+| 4 Tests | `go-qa-automation` | tests, worktree-isolated | `--seams`, `--callers`, `tested=` lens | `test-integrity`: no skips / weakened asserts |
+| 5 Verify | `go-qa-verifier` | PASS/FAIL report + coverage delta | `--affected` for the delta only - never to narrow the run | build + vet + `test -race` clean, 0 unexplained skips |
+| 6 Review | `go-reviewer` | findings list | `--quality-delta`, `--pr-context`, `--impact` | `go-precheck.sh` passes; loop to 3, max 3 rounds then escalate |
+| 7 DoD | you | checklist below all green | `--doc-drift` on the spec and plan | `govulncheck` clean |
+| 8 Ship | you | commit + PR referencing spec/plan | - | CI (`agent-gates.yml`) is the backstop |
+
+### On the retrieval column
+
+There is no "build the index" step. ripwire parses on first call (~0.3 s
+median) and keeps a warm per-root cache; the `.mcp.json` server holds one
+parsed workspace in memory across calls. You do not prepare anything - you ask.
+
+Two of these are not merely faster:
+
+- **Phase 2, `--pack-task="<task>" --partition=N`** gives one shared context
+  core plus N minimally-overlapping slices carved along the call graph's own
+  communities - the per-agent briefs you would otherwise hand-write for
+  `superpowers:dispatching-parallel-agents`. Check `overlap_max` before
+  trusting the split. `--plan-lanes=N --task="..."` then says, before a line is
+  written, which lanes would collide and in what order they should land.
+- **Phase 6, `--quality-delta`** is a diff-scoped answer, not a repo scan: what
+  *this change* did to the six evidence families.
+
+Read every count as a floor. See `agents/go-reviewer.md` > "what ripwire cannot
+see in Go" - interface calls produce no edge, which in Go is not an edge case.
 
 ## Phase detail
 
-**0 Intake.** Capture the request verbatim. Grep the touch points (~5 min).
+**0 Intake.** Capture the request verbatim. Get the touch points from
+`ripwire . --for="<the ticket text>"` and `--recall="<the task>"` (what past
+sessions wrote down) rather than grepping for them.
 Cut a feature branch off `main` now - `git switch -c feat/<feature>` - so every
 later phase has a home and phase 8 has something to PR. If the premise is
 wrong, say so now, before anyone plans. Check the size: if it will not fit one
@@ -133,7 +155,8 @@ before ship. Nothing merges with an item unchecked.
 
 ```
 go-coder        Implement section N of docs/plans/<feature>.md. Files: [...].
-                Follow surrounding package patterns. Spec: docs/specs/<feature>.md.
+                Open with ripwire --for / --exemplar; follow surrounding package
+                patterns. Spec: docs/specs/<feature>.md.
 
 go-qa-automation Write tests for the acceptance criteria in docs/specs/<feature>.md.
                 Production code: [files]. State the level and justify it.
@@ -145,6 +168,8 @@ go-qa-verifier  Run the full suite on branch feat/<feature> (tests already merge
 
 go-reviewer     Review the diff for <feature>. Base: main. Spec: docs/specs/<feature>.md,
                 plan: docs/plans/<feature>.md - flag anything that drifts from them.
+                Establish blast radius with --quality-delta / --impact; state
+                where the counts are a floor.
 ```
 
 ## Definition of Done
@@ -173,4 +198,6 @@ go-reviewer     Review the diff for <feature>. Base: main. Spec: docs/specs/<fea
 | Plan drifts during phase 3, doc never updated                          | reviewer and PR reader trust a spec that no longer holds           |
 | Shipping without `govulncheck`                                         | no gate scans dependencies; a known CVE reaches prod               |
 | Looping phase 6 forever on a contested finding                         | cap at 3 rounds, escalate — it is a design dispute, not a bug      |
+| Treating an empty `--impact` on an interface method as proof a change is safe | false clean; Go dispatch produces no call edge |
+| Narrowing `go-qa-verifier`'s run with `--test-gate`                          | the ship gate stops being a gate |
 | Renaming an agent without updating hooks                               | that agent silently loses its gate (`harness-gate` hunts for this) |

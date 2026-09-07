@@ -1,0 +1,2 @@
+{ "expect_exit": 2, "expect_stderr": "ripwire verb that writes",
+  "input": { "agent_type": "harness-gate", "tool_input": { "command": "ripwire . --replace-symbol-body=Handle --edit-payload=-" } } }

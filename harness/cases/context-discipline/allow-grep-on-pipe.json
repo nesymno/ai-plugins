@@ -1,0 +1,2 @@
+{ "expect_exit": 0, "args": "--assume-ripwire",
+  "input": { "agent_type": "go-reviewer", "tool_name": "Bash", "tool_input": { "command": "go test ./... 2>&1 | grep -c FAIL" } } }

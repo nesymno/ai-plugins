@@ -2,7 +2,7 @@
 name: harness-gate
 description: Audits the plugin's enforcement machinery - proves hooks still block, gates still fire, and CI checks still run. Use after changing any hook or agent, and before trusting the system on something important.
 model: sonnet
-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob, Bash, mcp__plugin_prod-ready-go-coding_ripwire__grep, mcp__plugin_prod-ready-go-coding_ripwire__find_symbol, mcp__plugin_prod-ready-go-coding_ripwire__find_referencing_symbols
 disallowedTools: Write, Edit, Skill
 maxTurns: 25
 memory: project

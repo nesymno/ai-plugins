@@ -33,6 +33,19 @@
         "hooks": [
           { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/config-guard.sh" }
         ]
+      },
+      {
+        "$comment": "A matcher of only letters, digits, _, -, spaces, ',' and '|' is read as a LIST OF EXACT TOOL NAMES, not a regex. Keep it that way - a stray character silently turns this into an unanchored regex.",
+        "matcher": "Grep|Bash",
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/context-discipline.sh" }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/read-budget.sh" }
+        ]
       }
     ],
     "PostToolUse": [

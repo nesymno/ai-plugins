@@ -1,0 +1,2 @@
+{ "expect_exit": 0, "args": "--assume-ripwire --budget=99",
+  "input": { "session_id": "gates-allow", "agent_type": "go-coder", "tool_name": "Read", "tool_input": { "file_path": "internal/api/handler.go" } } }

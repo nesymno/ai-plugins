@@ -58,4 +58,12 @@ printf '%s' "$CMD" | grep -qiE '\b(npm|yarn|pnpm|pip|pip3|cargo|apt|apt-get|brew
 printf '%s' "$CMD" | grep -qE '\|[[:space:]]*(sh|bash|zsh)\b|\beval\b|\bxargs\b[^|]*\b(rm|mv|cp|sed|tee|dd|truncate)\b' \
   && deny "unverifiable command shape."
 
+# 8. ripwire's WRITING verbs. Rule 1 catches `ripwire . --report > f`, but not
+#    the flags that write on their own: the three span-addressed edit verbs,
+#    the note store, the committed index artifact, and --html=FILE. Every READ
+#    verb stays allowed and is in fact what these agents are now pushed toward
+#    (hooks/context-discipline.sh), so this must stay a narrow list of writers.
+printf '%s' "$CMD" | grep -qE '\bripwire\b[^|]*--(replace-symbol-body|insert-(before|after)-symbol|edit-payload|edit-target-file|note-add|quality-baseline|quality-ack|index-out|export|html)(=|[[:space:]]|$)' \
+  && deny "a ripwire verb that writes. Read verbs are allowed - use one."
+
 exit 0

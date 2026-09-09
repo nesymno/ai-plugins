@@ -1,0 +1,2 @@
+{ "expect_exit": 2, "args": "--assume-ripwire", "expect_stderr": "recursive grep",
+  "input": { "agent_type": "go-reviewer", "tool_name": "Bash", "tool_input": { "command": "grep -rn \"ErrNotFound\" internal/" } } }

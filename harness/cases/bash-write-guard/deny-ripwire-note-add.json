@@ -1,0 +1,2 @@
+{ "expect_exit": 2, "expect_stderr": "ripwire verb that writes",
+  "input": { "agent_type": "go-reviewer", "tool_input": { "command": "ripwire . --note-add=\"Handler: retries are not idempotent\"" } } }

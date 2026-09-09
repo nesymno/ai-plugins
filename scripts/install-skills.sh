@@ -10,6 +10,34 @@ set -euo pipefail
 
 add() { echo ">> $2 from $1"; npx --yes skills add "$1" --skill "$2"; }
 
+# --- ripwire: the retrieval route the agents are pushed onto ---------------
+# Without this binary the .mcp.json server cannot start and both
+# hooks/context-discipline.sh and hooks/read-budget.sh disable themselves - the
+# plugin keeps working but the agents fall back to grepping, which is the
+# behaviour those gates exist to prevent.
+#
+# Skipped when ripwire is already on PATH, so re-running this script is cheap.
+# Set NESYMNO_SKIP_RIPWIRE=1 to opt out entirely (e.g. you install it via brew).
+if [ "${NESYMNO_SKIP_RIPWIRE:-0}" != "1" ] && ! command -v ripwire >/dev/null 2>&1; then
+  echo ">> ripwire (binary) from redhat-et/ripwire"
+  RIPWIRE_REPO=redhat-et/ripwire bash -c \
+    "$(curl -fsSL https://raw.githubusercontent.com/redhat-et/ripwire/main/scripts/install.sh)"
+fi
+
+# ripwire's own agent skills, installed loose for the same reason as everything
+# else here: plain names, so hooks/skill-allowlist.sh can gate them per agent.
+# NOT installed with --hook: ripwire's installer would write a PreToolUse entry
+# into your global ~/.claude/settings.json, and this plugin keeps every gate at
+# plugin scope in hooks/hooks.json. Its advisory nudge is retired upstream
+# anyway (measured inert in a randomized A/B); hooks/context-discipline.sh is
+# the enforcing replacement.
+if [ "${NESYMNO_SKIP_RIPWIRE:-0}" != "1" ]; then
+  RW_SRC="${TMPDIR:-/tmp}/nesymno-ripwire-skills"
+  rm -rf "$RW_SRC"
+  git clone --depth 1 -q https://github.com/redhat-et/ripwire "$RW_SRC"
+  "$RW_SRC"/skills/install.sh
+fi
+
 GO=https://github.com/samber/cc-skills-golang
 GEN=https://github.com/samber/cc-skills
 

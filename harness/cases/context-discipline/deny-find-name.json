@@ -1,0 +1,2 @@
+{ "expect_exit": 2, "args": "--assume-ripwire", "expect_stderr": "find -name",
+  "input": { "agent_type": "harness-gate", "tool_name": "Bash", "tool_input": { "command": "find . -name '*_test.go'" } } }

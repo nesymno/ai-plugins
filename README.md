@@ -22,7 +22,43 @@ git clone https://github.com/nesymno/ai-plugins && cd ai-plugins
 
 `scripts/install-skills.sh` installs the Go skills loosely under
 `~/.claude/skills/` (not as plugins) so the plain names in agent frontmatter
-and in `hooks/skill-allowlist.sh` resolve.
+and in `hooks/skill-allowlist.sh` resolve. It also installs
+[ripwire](https://github.com/redhat-et/ripwire) - the binary plus its agent
+skills - unless `NESYMNO_SKIP_RIPWIRE=1` or a `ripwire` is already on PATH.
+
+You do not need to clone this repo to run that script: installing the plugin
+already put it on disk. `"$CLAUDE_PLUGIN_ROOT"/scripts/install-skills.sh` from
+any session works, and the clone above is only for reading the source first.
+
+## Retrieval: ripwire instead of grep
+
+Agents that grep a repo spend their context on text they never use. This plugin
+routes them onto [ripwire](https://github.com/redhat-et/ripwire), a
+deterministic ranked call graph over the repo (~0.3 s to index, ~0.1 s a query,
+21 languages), and then **enforces the route** rather than suggesting it.
+
+Enforcing rather than suggesting is deliberate. ripwire ships its own advisory
+PreToolUse nudge and its authors retired it on 2026-09-02 after a randomized
+A/B measured both nudge tiers inert; their notes put passive skill-description
+triggering at ~30-50% reliable. An agent with grep available uses grep. So
+`context-discipline` denies and names the replacement verb.
+
+| Piece | What it does |
+|---|---|
+| `.mcp.json` | starts `ripwire --mcp` as a persistent index server through `scripts/ripwire-mcp.sh` |
+| agent `tools:` | each agent gets only the verbs its role needs; no agent gets the three edit verbs |
+| `context-discipline` | blocks the Grep tool and recursive `grep`/`rg`/`find -name` in Bash |
+| `read-budget` | caps whole-file `Read` per agent per session; ranged reads are free |
+| `bash-write-guard` rule 8 | keeps read-only agents out of ripwire's writing verbs |
+
+Both new hooks **self-disable when `ripwire` is not on PATH**, so the plugin
+degrades to its previous behaviour instead of breaking; `session-start` says so
+once per session.
+
+Every ripwire count is a floor, not a total. In Go specifically, a call through
+an interface produces no edge - `agents/go-reviewer.md` carries the full limits
+section, and the reviewer is required to say so rather than report a false
+clean.
 
 ## Agents
 
@@ -51,7 +87,9 @@ does nothing.
 | config-guard | PreToolUse:Edit\|Write | improver | block edits to agents/hooks/harness/settings → write a proposal |
 | go-check | PostToolUse:Edit\|Write | any (Go files only) | gofmt / build / vet / golangci-lint |
 | test-integrity | PostToolUse:Edit\|Write | any (`*_test.go` only) | block weakening a test |
-| session-start | SessionStart | - | run verify-gates, warn if a gate is broken |
+| context-discipline | PreToolUse:Grep\|Bash | go-coder, go-reviewer, go-qa-automation, go-qa-verifier, harness-gate | block repo-wide text search; name the ripwire verb (off without ripwire) |
+| read-budget | PreToolUse:Read | same five | cap whole-file reads per session; ranged reads uncounted (off without ripwire) |
+| session-start | SessionStart | - | run verify-gates, warn if a gate is broken or ripwire is missing |
 | telemetry | SubagentStop | - | append one line per finished subagent for `improver` |
 
 `hooks/go-precheck.sh` is not a hook; `go-reviewer` runs it by hand as its

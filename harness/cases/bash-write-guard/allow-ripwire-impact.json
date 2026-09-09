@@ -1,0 +1,2 @@
+{ "expect_exit": 0,
+  "input": { "agent_type": "go-qa-verifier", "tool_input": { "command": "ripwire . --impact=Handle" } } }
